@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	transportHTTP "github.com/nogiecb/go-rest-api-course/internal/transport"
+	"github.com/nogiecb/go-rest-api-course/internal/transport/database"
 )
 
 // App - the struct which contains things like
@@ -14,6 +15,12 @@ type App struct{}
 // Run - handles the startup of our application
 func (app *App) Run() error {
 	fmt.Println("Setting up our Application")
+
+	var err error
+	_, err = database.NewDatabase()
+	if err != nil {
+		return nil
+	}
 
 	handler := transportHTTP.NewHandler()
 	handler.SetupRoutes()
