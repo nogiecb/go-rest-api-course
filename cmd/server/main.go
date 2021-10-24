@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	transportHTTP "github.com/nogiecb/go-rest-api-course/internal/transport"
+	"github.com/nogiecb/go-rest-api-course/internal/transport/comment"
 	"github.com/nogiecb/go-rest-api-course/internal/transport/database"
 )
 
@@ -17,12 +18,19 @@ func (app *App) Run() error {
 	fmt.Println("Setting up our Application")
 
 	var err error
-	_, err = database.NewDatabase()
+	db, err := database.NewDatabase()
 	if err != nil {
-		return nil
+		return err
 	}
 
-	handler := transportHTTP.NewHandler()
+	err = database.MigrateDB(db)
+	if err != nil {
+		return err
+	}
+
+	commentService := comment.NewService(db)
+
+	handler := transportHTTP.NewHandler(commentService)
 	handler.SetupRoutes()
 
 	if err := http.ListenAndServe(":8080", handler.Router); err != nil {

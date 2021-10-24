@@ -35,11 +35,9 @@ func NewDatabase() (*gorm.DB, error) {
 	dbPort := goDotEnvVariable("DB_PORT")
 
 	connectString := fmt.Sprintf("host=%s port=%s dbname=%s user=%s password=%s sslmode=disable", dbHost, dbPort, dbName, dbUsername, dbPassword)
-	fmt.Println(connectString)
 
 	db, err := gorm.Open("postgres", connectString)
 	if err != nil {
-		fmt.Println("Error with DB connection")
 		return db, err
 	}
 
